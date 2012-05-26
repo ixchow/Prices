@@ -34,7 +34,6 @@ Else
 	Exit
 EndIf
 
-
 ; lengths
 Local $lengthItemRowHeight = ($boxItem[3]-$boxItem[1])/11
 
