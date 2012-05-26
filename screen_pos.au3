@@ -15,13 +15,31 @@ Global $corner[1]
 
 Global $names[1]
 
-_ArrayPush($names, "$boxSearch")
+$names[0] = "trash"
+
+_ArrayAdd($names, "$boxLevelMin")
+_ArrayAdd($names, "$boxLevelMax")
+_ArrayAdd($names, "$boxPref1Min")
+
+_ArrayAdd($names, "$boxItemTypeArrow")
+_ArrayAdd($names, "$boxItemTypeName")
+_ArrayAdd($names, "$boxItemSubtypeArrow")
+_ArrayAdd($names, "$boxItemSubtypeName")
+
+_ArrayAdd($names, "$boxItemTypeDropdown")
+_ArrayAdd($names, "$boxItemSubtypeDropdown")
+_ArrayAdd($names, "$boxItemSubtypeScrollDown")
+_ArrayAdd($names, "$boxItemSubtypeScrollUp")
+
+_ArrayAdd($names, "$boxSearch")
 _ArrayAdd($names, "$boxNext")
 _ArrayAdd($names, "$boxItem")
 _ArrayAdd($names, "$boxDps")
 _ArrayAdd($names, "$boxBid")
 _ArrayAdd($names, "$boxBuyout")
 _ArrayAdd($names, "$boxTimeLeft")
+
+_ArrayDelete($names, 0)
 
 ConsoleWrite($names[0] & ' = ParseBox("')
 _ArrayDelete($names, 0)
