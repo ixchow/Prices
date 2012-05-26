@@ -6,6 +6,7 @@
 #include <ScreenCapture.au3>
 #include "./screen_spots.au3"
 
+
 Local $pagesDeep = 45
 Local $numItems = 5000;
 
@@ -35,23 +36,25 @@ EndIf
 
 
 For $round = 1 To 3
-	;ClickBox($boxSearch)
-	;Sleep(5000)
+	ClickBox($boxSearch)
+	Sleep(5000)
 	For $page = 1 To $pagesDeep ;
 	For $rowInd = 1 To 11;$y = 292 To 742 Step 44
 		$y = Round($boxItem[1] + $lengthItemRowHeight * ($rowInd-1))
-		$name = StringTrimRight(OCR($boxItem[0], $y +5, $boxItem[2], $y + 40, "-l item -psm 7"), 2)
+		MouseMove(@DesktopWidth-10, $y)
+		$name = StringTrimRight(OCR($boxItem[0], $y +5, $boxItem[2], $y + 40, "-l item -psm 7", "ocr_name"), 2)
 		If StringRegExp($name, "\A *\Z")==1 Then ; blank name
+			ConsoleWrite("empty name, continuing" & @CRLF)
 			ContinueLoop
 		EndIF
-		$dps = toNum(OCR($boxDps[0], $y+5, $boxDps[2], $y + 38, "-l d3 -psm 7", "dps"))
-		$bid = toNumO(OCR($boxBid[0], $y+5, $boxBid[2], $y + 40, "-l d3 -psm 7", "bid"))
-		$buyout = toNumO(OCR($boxBuyout[0], $y+5, $boxBuyout[2], $y + 40, "-l d3 -psm 7", "buyout"))
-		$timeLeft = StringTrimRight(OCR($boxTimeLeft[0], $y+5, $boxTimeLeft[2], $y + 40, "-l d3 -psm 7"), 2)
+		$dps = toNum(OCR($boxDps[0], $y+5, $boxDps[2], $y + 38, "-l d3 -psm 7", "ocr_dps"))
+		$bid = toNumO(OCR($boxBid[0], $y+5, $boxBid[2], $y + 38, "-l d3 -psm 7", "ocr_bid"))
+		$buyout = toNumO(OCR($boxBuyout[0], $y+5, $boxBuyout[2], $y + 38, "-l d3 -psm 7", "ocr_buyout"))
+		$timeLeft = StringTrimRight(OCR($boxTimeLeft[0], $y+5, $boxTimeLeft[2], $y + 38, "-l d3 -psm 7"), 2)
 
 
-		If $bid == -1 OR $buyout == -1 Then
-			ConsoleWrite("bad read,"& $bid & " continuing" & @CRLF)
+		If $dps == -1 OR $bid == -1 OR $buyout == -1 Then
+			ConsoleWrite("bad read, continuing" & @CRLF)
 			ContinueLoop
 		EndIf
 
@@ -66,12 +69,12 @@ For $round = 1 To 3
 					ConsoleWrite(@TAB & "from " & $items[$i][2] & " to " & $bid & @CRLF)
 					$timeString = StringRegExpReplace(_NowCalc(), "[/ :]", "-")
 					FileWriteLine($file, $timeString & @TAB & $name & @TAB & $dps & @TAB & $items[$i][2] & @TAB & $bid & @TAB & $buyout & @TAB & $timeLeft)
-					MouseMove(609, $y+10)
+					MouseMove($boxItem[0]- 10, $y+25)
 					Sleep(1000)
 					If Not $items[$i][7] Then
-						RunWait("C:\Users\Michael\Desktop\boxcutter-1.2\boxcutter.exe -c 1,1,1680,1050 "& $timeString &".bmp")
+						RunWait("C:\Users\Michael\Desktop\boxcutter-1.2\boxcutter.exe -c 1,1,1680,1050 "& $timeString & "_" & $items[$i][2] & "_" & $bid &".bmp")
 					EndIf
-					MouseMove(1600, $y+10)
+					MouseMove(@DesktopWidth, $y+20)
 					$items[$i][2] = $bid
 					$items[$i][7] = True
 				EndIf
@@ -83,7 +86,8 @@ For $round = 1 To 3
 		If Not $found Then
 			for $i = 0 To $numItems-1
 				if Not $items[$i][6] Then
-					ConsoleWrite("added new item at " & $i & ", item name " & $name & @CRLF)
+					ConsoleWrite("added: " & $name & @TAB & $bid & @CRLF)
+
 					$items[$i][0] = $name
 					$items[$i][1] = $dps
 					$items[$i][2] = $bid
@@ -127,10 +131,10 @@ Func ClickBox($box)
 EndFunc
 
 Func OCR($x1, $y1, $x2, $y2, $arg, $filename="out")
-	ConsoleWrite("OCR-ing " & $x1 & " " & $y1 & " " & $x2 & " " & $y2 & @CRLF);
+	;ConsoleWrite("OCR-ing " & $x1 & " " & $y1 & " " & $x2 & " " & $y2 & @CRLF);
 	_ScreenCapture_Capture($filename & ".bmp", Int($x1), Int($y1), Int($x2), Int($y2), False)
 ;RunWait("C:\Users\Michael\Desktop\boxcutter-1.2\boxcutter.exe -c "&$x1&","&$y1&","&$x2&","&$y2&" out.bmp", "", @SW_HIDE)
-	Sleep(100)
+	;Sleep(100)
 	RunWait("tesseract " & $filename & ".bmp " & $filename & " " & $arg, "", @SW_HIDE)
 	$s = FileRead($filename & ".txt")
 	Return $s
@@ -164,15 +168,25 @@ Func toNumO($x)
 	If StringRegExp($x, "[NA]") Then
 		$num = 0
 	ElseIf NOT StringRegExp($x, "O") Then
-		$num = -1
-		ConsoleWrite("checking number: " & $x)
+		$num = Number(StringRegExpReplace($x, '[, ]', ""))
+		$num = $num/10;
 	Else
-		$num = Number(StringRegExpReplace($x, '[, O]', ""))
+		$s = StringRegExpReplace($x, '[, O]', "")
+		If StringRegExp($s, "[a-zA-Z]") Then
+			$num = -1
+		Else
+			$num = Number($s)
+		EndIf
 	EndIf
 	Return $num
 EndFunc
 
 Func toNum($x)
-	$num = Number(StringRegExpReplace($x, '[ ]', ""))
+	If StringRegExp($x, "[a-zA-Z]") Then
+		$num = -1
+	Else
+		$num = Number(StringRegExpReplace($x, '[ ]', ""))
+	EndIf
+
 	Return $num
 EndFunc
