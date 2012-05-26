@@ -44,7 +44,7 @@ For $round = 1 To 3
 		If StringRegExp($name, "\A *\Z")==1 Then ; blank name
 			ContinueLoop
 		EndIF
-		$dps = toNum(OCR($boxDps[0], $y+5, $boxDps[2], $y + 38, "-l d3 -psm 7", "dps"))
+		$dps = toNum(OCR($boxDps[0], $y+5, $boxDps[2], $y + 38, "-l d3 -psm 7", "/ocr/dps"))
 		$bid = toNumO(OCR($boxBid[0], $y+5, $boxBid[2], $y + 40, "-l d3 -psm 7", "bid"))
 		$buyout = toNumO(OCR($boxBuyout[0], $y+5, $boxBuyout[2], $y + 40, "-l d3 -psm 7", "buyout"))
 		$timeLeft = StringTrimRight(OCR($boxTimeLeft[0], $y+5, $boxTimeLeft[2], $y + 40, "-l d3 -psm 7"), 2)
