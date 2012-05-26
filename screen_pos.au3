@@ -15,8 +15,13 @@ Global $corner[1]
 
 Global $names[1]
 
-_ArrayPush($names, "$_searchTab")
-_ArrayAdd($names, "$_equipmentButton")
+_ArrayPush($names, "$boxSearch")
+_ArrayAdd($names, "$boxNext")
+_ArrayAdd($names, "$boxItem")
+_ArrayAdd($names, "$boxDps")
+_ArrayAdd($names, "$boxBid")
+_ArrayAdd($names, "$boxBuyout")
+_ArrayAdd($names, "$boxTimeLeft")
 
 ConsoleWrite($names[0] & ' = ParseBox("')
 _ArrayDelete($names, 0)
