@@ -12,7 +12,7 @@ Func Stop()
 EndFunc
 
 Func MouseTo($box)
-	MouseMove( Random($box[0], $box[2]), Random($box[1], $box[3]) )
+	MouseMove( Random($box[0], $box[2]), Random($box[1], $box[3]), 2 )
 EndFunc
 
 Func Click($box)
@@ -22,30 +22,30 @@ EndFunc
 
 Func WriteValue($box, $val)
 	Click($box)
-	Sleep(Random(50,70))
+	Sleep(Random(10,20))
 	Send("{BS}")
-	Sleep(Random(50,70))
+	Sleep(Random(10,20))
 	Send("{BS}")
-	Sleep(Random(50,70))
+	Sleep(Random(10,20))
 	Send("{BS}")
-	Sleep(Random(50,70))
+	Sleep(Random(10,20))
 	Send("{DEL}")
-	Sleep(Random(50,70))
+	Sleep(Random(10,20))
 	Send("{DEL}")
-	Sleep(Random(50,70))
+	Sleep(Random(10,20))
 	Send("{DEL}")
-	Sleep(Random(50,70))
+	Sleep(Random(10,20))
 	$split = StringSplit("" & $val, "")
 	For $i = 1 To $split[0]
 		Send($split[$i])
-		Sleep(Random(50,70))
+		Sleep(Random(10,20))
 	Next
 EndFunc
 
 Func Search()
 	;Move mouse away from search button:
 	MouseTo($boxItemTypeArrow)
-	Sleep(100)
+	Sleep(50)
 	Local $searchDoneSum = PixelChecksum($boxSearch[0], $boxSearch[1], $boxSearch[2], $boxSearch[3], 2)
 
 	Click($boxSearch)
@@ -54,7 +54,7 @@ Func Search()
 	;Wait for search to be done:
 	;ConsoleWrite("Waiting for search to finish...");
 	While 1
-		Sleep(100)
+		Sleep(50)
 		Local $searchSum = PixelChecksum($boxSearch[0], $boxSearch[1], $boxSearch[2], $boxSearch[3], 2)
 		if $searchSum == $searchDoneSum Then
 			ExitLoop
@@ -83,11 +83,11 @@ Func Go()
 	Local $lev = 1
 	Local $val = 1
 
-	ConsoleWrite("level, value" & @CRLF)
+	ConsoleWrite("level" & @TAB & "value" & @CRLF)
 	While 1
 		WriteValue($boxPref1Min, $val)
 		;Increase lev until there are results:
-		While $lev < 60
+		While $lev < 61
 			WriteValue($boxLevelMax, $lev)
 			Search()
 			Local $resultsSum = PixelChecksum($boxItem[0], $boxItem[1], $boxItem[2], $boxItem[3], 2)
@@ -96,7 +96,7 @@ Func Go()
 			EndIf
 			$lev = $lev + 1
 		WEnd
-		if $lev == 60 Then
+		if $lev == 61 Then
 			ConsoleWrite("Ran out." & @CRLF)
 			ExitLoop
 		EndIf
@@ -111,7 +111,7 @@ Func Go()
 				ExitLoop
 			EndIf
 		WEnd
-		ConsoleWrite($lev & ", " & $val & @CRLF)
+		ConsoleWrite($lev & @TAB & $val & @CRLF)
 		$val = $val + 1 ;move to next-largest value
 	WEnd
 
