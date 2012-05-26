@@ -29,9 +29,6 @@ Local $boxLevelMin
 Local $boxLevelMax
 Local $boxPref1Min
 
-Local $pixNextArrow ;in the next arrow somewhere that changes color depending on ability to press 'next' on results
-Local $pixSearchCorner ;in the search box somewhere that changes color based on searching / done searching
-
 If @DesktopWidth == 1600 And @DesktopHeight == 1200 Then
 	$boxSearch = ParseBox("X=201 Y=918 X=419 Y=946")
 	$boxNext = ParseBox("X=1084 Y=901 X=1100 Y=918")
@@ -54,8 +51,6 @@ If @DesktopWidth == 1600 And @DesktopHeight == 1200 Then
 	$boxLevelMin = ParseBox("X=184 Y=557 X=209 Y=575")
 	$boxLevelMax = ParseBox("X=263 Y=556 X=292 Y=577")
 	$boxPref1Min = ParseBox("X=407 Y=653 X=433 Y=670")
-
-	$pixNextArrow = ParsePix("X=1091 Y=909")
 ElseIf @DesktopWidth == 1680 And @DesktopHeight == 1050 Then
 	$boxSearch = ParseBox("X=430 Y=812 X=433 Y=814")
 	$boxNext = ParseBox("X=1096 Y=799 X=1097 Y=800")
