@@ -35,13 +35,15 @@ EndIf
 
 
 For $round = 1 To 3
-	;ClickBox($boxSearch)
-	;Sleep(5000)
+	ClickBox($boxSearch)
+	Sleep(5000)
 	For $page = 1 To $pagesDeep ;
 	For $rowInd = 1 To 11;$y = 292 To 742 Step 44
 		$y = Round($boxItem[1] + $lengthItemRowHeight * ($rowInd-1))
 		$name = StringTrimRight(OCR($boxItem[0], $y +5, $boxItem[2], $y + 40, "-l item -psm 7", "ocr_name"), 2)
 		If StringRegExp($name, "\A *\Z")==1 Then ; blank name
+			ConsoleWrite("empty name")
+			Exit
 			ContinueLoop
 		EndIF
 		$dps = toNum(OCR($boxDps[0], $y+5, $boxDps[2], $y + 38, "-l d3 -psm 7", "ocr_dps"))
@@ -67,12 +69,12 @@ For $round = 1 To 3
 					ConsoleWrite(@TAB & "from " & $items[$i][2] & " to " & $bid & @CRLF)
 					$timeString = StringRegExpReplace(_NowCalc(), "[/ :]", "-")
 					FileWriteLine($file, $timeString & @TAB & $name & @TAB & $dps & @TAB & $items[$i][2] & @TAB & $bid & @TAB & $buyout & @TAB & $timeLeft)
-					MouseMove(609, $y+10)
+					MouseMove($boxItem[0]- 10, $y+25)
 					Sleep(1000)
 					If Not $items[$i][7] Then
-						RunWait("C:\Users\Michael\Desktop\boxcutter-1.2\boxcutter.exe -c 1,1,1680,1050 "& $timeString &".bmp")
+						RunWait("C:\Users\Michael\Desktop\boxcutter-1.2\boxcutter.exe -c 1,1,1680,1050 "& $timeString & "_" & $items[$i][2] & "_" & $bid &".bmp")
 					EndIf
-					MouseMove(1600, $y+10)
+					MouseMove(@DesktopWidth, $y+20)
 					$items[$i][2] = $bid
 					$items[$i][7] = True
 				EndIf
@@ -84,7 +86,8 @@ For $round = 1 To 3
 		If Not $found Then
 			for $i = 0 To $numItems-1
 				if Not $items[$i][6] Then
-					ConsoleWrite("added new item at " & $i & ", item name " & $name & @CRLF)
+					ConsoleWrite("added: " & $name & @TAB & $bid & @CRLF)
+
 					$items[$i][0] = $name
 					$items[$i][1] = $dps
 					$items[$i][2] = $bid
