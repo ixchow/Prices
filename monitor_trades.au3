@@ -6,6 +6,7 @@
 #include <ScreenCapture.au3>
 #include "./screen_spots.au3"
 
+
 Local $pagesDeep = 45
 Local $numItems = 5000;
 
@@ -40,10 +41,10 @@ For $round = 1 To 3
 	For $page = 1 To $pagesDeep ;
 	For $rowInd = 1 To 11;$y = 292 To 742 Step 44
 		$y = Round($boxItem[1] + $lengthItemRowHeight * ($rowInd-1))
+		MouseMove(@DesktopWidth-10, $y)
 		$name = StringTrimRight(OCR($boxItem[0], $y +5, $boxItem[2], $y + 40, "-l item -psm 7", "ocr_name"), 2)
 		If StringRegExp($name, "\A *\Z")==1 Then ; blank name
-			ConsoleWrite("empty name")
-			Exit
+			ConsoleWrite("empty name, continuing" & @CRLF)
 			ContinueLoop
 		EndIF
 		$dps = toNum(OCR($boxDps[0], $y+5, $boxDps[2], $y + 38, "-l d3 -psm 7", "ocr_dps"))
@@ -52,9 +53,8 @@ For $round = 1 To 3
 		$timeLeft = StringTrimRight(OCR($boxTimeLeft[0], $y+5, $boxTimeLeft[2], $y + 38, "-l d3 -psm 7"), 2)
 
 
-		If $bid == -1 OR $buyout == -1 Then
+		If $dps == -1 OR $bid == -1 OR $buyout == -1 Then
 			ConsoleWrite("bad read, continuing" & @CRLF)
-			Exit
 			ContinueLoop
 		EndIf
 
@@ -134,7 +134,7 @@ Func OCR($x1, $y1, $x2, $y2, $arg, $filename="out")
 	;ConsoleWrite("OCR-ing " & $x1 & " " & $y1 & " " & $x2 & " " & $y2 & @CRLF);
 	_ScreenCapture_Capture($filename & ".bmp", Int($x1), Int($y1), Int($x2), Int($y2), False)
 ;RunWait("C:\Users\Michael\Desktop\boxcutter-1.2\boxcutter.exe -c "&$x1&","&$y1&","&$x2&","&$y2&" out.bmp", "", @SW_HIDE)
-	Sleep(100)
+	;Sleep(100)
 	RunWait("tesseract " & $filename & ".bmp " & $filename & " " & $arg, "", @SW_HIDE)
 	$s = FileRead($filename & ".txt")
 	Return $s
@@ -171,12 +171,22 @@ Func toNumO($x)
 		$num = Number(StringRegExpReplace($x, '[, ]', ""))
 		$num = $num/10;
 	Else
-		$num = Number(StringRegExpReplace($x, '[, O]', ""))
+		$s = StringRegExpReplace($x, '[, O]', "")
+		If StringRegExp($s, "[a-zA-Z]") Then
+			$num = -1
+		Else
+			$num = Number($s)
+		EndIf
 	EndIf
 	Return $num
 EndFunc
 
 Func toNum($x)
-	$num = Number(StringRegExpReplace($x, '[ ]', ""))
+	If StringRegExp($x, "[a-zA-Z]") Then
+		$num = -1
+	Else
+		$num = Number(StringRegExpReplace($x, '[ ]', ""))
+	EndIf
+
 	Return $num
 EndFunc
