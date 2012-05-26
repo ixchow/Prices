@@ -44,14 +44,15 @@ For $round = 1 To 3
 		If StringRegExp($name, "\A *\Z")==1 Then ; blank name
 			ContinueLoop
 		EndIF
-		$dps = toNum(OCR($boxDps[0], $y+5, $boxDps[2], $y + 38, "-l d3 -psm 7"))
-		$bid = toNumO(OCR($boxBid[0], $y+5, $boxBid[2], $y + 40, "-l d3 -psm 7"))
-		$buyout = toNumO(OCR($boxBuyout[0], $y+5, $boxBuyout[2], $y + 40, "-l d3 -psm 7"))
+		$dps = toNum(OCR($boxDps[0], $y+5, $boxDps[2], $y + 38, "-l d3 -psm 7", "dps"))
+		$bid = toNumO(OCR($boxBid[0], $y+5, $boxBid[2], $y + 40, "-l d3 -psm 7", "bid"))
+		$buyout = toNumO(OCR($boxBuyout[0], $y+5, $boxBuyout[2], $y + 40, "-l d3 -psm 7", "buyout"))
 		$timeLeft = StringTrimRight(OCR($boxTimeLeft[0], $y+5, $boxTimeLeft[2], $y + 40, "-l d3 -psm 7"), 2)
 
 
 		If $bid == -1 OR $buyout == -1 Then
-			ConsoleWrite("bad read, continuing" & @CRLF)
+			ConsoleWrite("bad read,"& $bid & " continuing" & @CRLF)
+			Exit
 			ContinueLoop
 		EndIf
 
@@ -126,12 +127,12 @@ Func ClickBox($box)
 	MouseClick("left", Random($box[0], $box[2]), Random($box[1], $box[3]))
 EndFunc
 
-Func OCR($x1, $y1, $x2, $y2, $arg)
+Func OCR($x1, $y1, $x2, $y2, $arg, $filename="out")
 	ConsoleWrite("OCR-ing " & $x1 & " " & $y1 & " " & $x2 & " " & $y2 & @CRLF);
-	_ScreenCapture_Capture("out.bmp", Int($x1), Int($y1), Int($x2), Int($y2), False)
+	_ScreenCapture_Capture($filename & ".bmp", Int($x1), Int($y1), Int($x2), Int($y2), False)
 ;RunWait("C:\Users\Michael\Desktop\boxcutter-1.2\boxcutter.exe -c "&$x1&","&$y1&","&$x2&","&$y2&" out.bmp", "", @SW_HIDE)
 	Sleep(100)
-	RunWait("tesseract out.bmp out " & $arg, "", @SW_HIDE)
+	RunWait("tesseract " & $filename & ".bmp " & $filename & " " & $arg, "", @SW_HIDE)
 	$s = FileRead("out.txt")
 	Return $s
 EndFunc
@@ -161,11 +162,13 @@ Exit
 EndFunc
 
 Func toNumO($x)
-	$num = Number(StringRegExpReplace($x, '[, O]', ""))
 	If StringRegExp($x, "[NA]") Then
 		$num = 0
 	ElseIf NOT StringRegExp($x, "O") Then
 		$num = -1
+		ConsoleWrite("checking number: " & $x)
+	Else
+		$num = Number(StringRegExpReplace($x, '[, O]', ""))
 	EndIf
 	Return $num
 EndFunc
