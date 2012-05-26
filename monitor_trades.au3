@@ -52,7 +52,6 @@ For $round = 1 To 3
 
 		If $bid == -1 OR $buyout == -1 Then
 			ConsoleWrite("bad read,"& $bid & " continuing" & @CRLF)
-			Exit
 			ContinueLoop
 		EndIf
 
@@ -133,7 +132,7 @@ Func OCR($x1, $y1, $x2, $y2, $arg, $filename="out")
 ;RunWait("C:\Users\Michael\Desktop\boxcutter-1.2\boxcutter.exe -c "&$x1&","&$y1&","&$x2&","&$y2&" out.bmp", "", @SW_HIDE)
 	Sleep(100)
 	RunWait("tesseract " & $filename & ".bmp " & $filename & " " & $arg, "", @SW_HIDE)
-	$s = FileRead("out.txt")
+	$s = FileRead($filename & ".txt")
 	Return $s
 EndFunc
 
