@@ -11,7 +11,7 @@ $boxNext[2] = 1097
 $boxNext[3] = 800
 
 ; lengths
-Local $boxItem= ParseBox("X=627 Y=297 X=1067 Y=769")
+Local $boxItem= ParseBox("X=627 Y=297 X=1067 Y=771")
 
 Local $boxDps = ParseBox("X=1040 Y=297 X=1109 Y=769")
 

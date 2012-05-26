@@ -38,10 +38,8 @@ For $round = 1 To 3
 	;Sleep(5000)
 	For $page = 1 To $pagesDeep ;
 	For $rowInd = 1 To 11;$y = 292 To 742 Step 44
-		$y = $boxItem[1] + $lengthItemRowHeight * ($rowInd-1)
-
+		$y = Round($boxItem[1] + $lengthItemRowHeight * ($rowInd-1))
 		$name = StringTrimRight(OCR($boxItem[0], $y +5, $boxItem[2], $y + 40, "-l item -psm 7"), 2)
-		Exit
 		If StringRegExp($name, "\A *\Z")==1 Then ; blank name
 			ContinueLoop
 		EndIF
@@ -52,6 +50,7 @@ For $round = 1 To 3
 
 
 		If $bid == -1 OR $buyout == -1 Then
+			ConsoleWrite("bad read, continuing" & @CRLF)
 			ContinueLoop
 		EndIf
 
