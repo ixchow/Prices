@@ -3,6 +3,7 @@
 #AutoIt3Wrapper_Change2CUI=y
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #include <Date.au3>
+#include <ScreenCapture.au3>
 #include "./screen_spots.au3"
 
 Local $pagesDeep = 45
@@ -127,11 +128,13 @@ Func ClickBox($box)
 EndFunc
 
 Func OCR($x1, $y1, $x2, $y2, $arg)
-RunWait("C:\Users\Michael\Desktop\boxcutter-1.2\boxcutter.exe -c "&$x1&","&$y1&","&$x2&","&$y2&" out.bmp", "", @SW_HIDE)
-Sleep(100)
-RunWait("tesseract out.bmp out " & $arg, "", @SW_HIDE)
-$s = FileRead("out.txt")
-Return $s
+	ConsoleWrite("OCR-ing " & $x1 & " " & $y1 & " " & $x2 & " " & $y2 & @CRLF);
+	_ScreenCapture_Capture("out.bmp", Int($x1), Int($y1), Int($x2), Int($y2), False)
+;RunWait("C:\Users\Michael\Desktop\boxcutter-1.2\boxcutter.exe -c "&$x1&","&$y1&","&$x2&","&$y2&" out.bmp", "", @SW_HIDE)
+	Sleep(100)
+	RunWait("tesseract out.bmp out " & $arg, "", @SW_HIDE)
+	$s = FileRead("out.txt")
+	Return $s
 EndFunc
 
 Func Trim($s, $delim)
