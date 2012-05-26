@@ -3,6 +3,7 @@
 #AutoIt3Wrapper_Change2CUI=y
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #include <Date.au3>
+#include "./screen_spots.au3"
 
 Local $pagesDeep = 45
 Local $numItems = 5000;
@@ -33,19 +34,21 @@ EndIf
 
 
 For $round = 1 To 3
-	MouseClick("left", 430+ Random(-10, 10), 812+ Random(-2, 2)) ; search again
-	Sleep(5000)
+	;ClickBox($boxSearch)
+	;Sleep(5000)
 	For $page = 1 To $pagesDeep ;
+	For $rowInd = 1 To 11;$y = 292 To 742 Step 44
+		$y = $boxItem[1] + $lengthItemRowHeight * ($rowInd-1)
 
-	For $y = 292 To 742 Step 44
-		$name = StringTrimRight(OCR(632, $y +5, 1067, $y + 40, "-l item -psm 7"), 2)
+		$name = StringTrimRight(OCR($boxItem[0], $y +5, $boxItem[2], $y + 40, "-l item -psm 7"), 2)
+		Exit
 		If StringRegExp($name, "\A *\Z")==1 Then ; blank name
 			ContinueLoop
 		EndIF
-		$dps = toNum(OCR(1040, $y+5, 1109, $y + 40, "-l d3 -psm 7"))
-		$bid = toNumO(OCR(1109, $y+5, 1210, $y + 40, "-l d3 -psm 7"))
-		$buyout = toNumO(OCR(1210, $y+5, 1310, $y + 40, "-l d3 -psm 7"))
-		$timeLeft = StringTrimRight(OCR(1354, $y+5, 1419, $y + 40, "-l d3 -psm 7"), 2)
+		$dps = toNum(OCR($boxDps[0], $y+5, $boxDps[2], $y + 38, "-l d3 -psm 7"))
+		$bid = toNumO(OCR($boxBid[0], $y+5, $boxBid[2], $y + 40, "-l d3 -psm 7"))
+		$buyout = toNumO(OCR($boxBuyout[0], $y+5, $boxBuyout[2], $y + 40, "-l d3 -psm 7"))
+		$timeLeft = StringTrimRight(OCR($boxTimeLeft[0], $y+5, $boxTimeLeft[2], $y + 40, "-l d3 -psm 7"), 2)
 
 
 		If $bid == -1 OR $buyout == -1 Then
@@ -105,8 +108,8 @@ for $i = 0 To $numItems-1
 		ConsoleWrite("removed old item at " & $i & ", item name " & $name & @CRLF)
 	EndIf
 Next
-If $page <> $pagesDeep Then
-	MouseClick("left", 1096 + Random(-2, 2), 799 + Random(-2, 2)) ; next page
+If $page <> $pagesDeep Then ; next page
+	 ClickBox($boxNext); next page
 	Sleep(100 + Random(100, 1000))
 EndIf
 
@@ -118,6 +121,10 @@ Stop()
 
 
 ; Funcs
+
+Func ClickBox($box)
+	MouseClick("left", Random($box[0], $box[2]), Random($box[1], $box[3]))
+EndFunc
 
 Func OCR($x1, $y1, $x2, $y2, $arg)
 RunWait("C:\Users\Michael\Desktop\boxcutter-1.2\boxcutter.exe -c "&$x1&","&$y1&","&$x2&","&$y2&" out.bmp", "", @SW_HIDE)
