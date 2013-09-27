@@ -6,6 +6,8 @@
 #include <ScreenCapture.au3>
 #include "./screen_spots.au3"
 
+; tries to monitor weapon trades
+; jimike 2012?
 
 Func ClickWait($box)
 	;Move mouse away from search button:

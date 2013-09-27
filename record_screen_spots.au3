@@ -17,6 +17,21 @@ Global $names[1]
 
 $names[0] = "trash"
 
+
+_ArrayAdd($names, "$boxCraftingQuantity")
+_ArrayAdd($names, "$boxCraftingPPU")
+_ArrayAdd($names, "$boxCraftingLast10")
+_ArrayAdd($names, "$boxCraftingLastDay")
+_ArrayAdd($names, "$boxCraftingMenu0Arrow")
+_ArrayAdd($names, "$boxCraftingMenu1Arrow")
+_ArrayAdd($names, "$boxCraftingMenu2Arrow")
+_ArrayAdd($names, "$boxCraftingMenu0Dropdown")
+_ArrayAdd($names, "$boxCraftingMenu1Dropdown")
+_ArrayAdd($names, "$boxCraftingMenu2Dropdown")
+_ArrayAdd($names, "$boxCraftingMenu1ScrollDown")
+_ArrayAdd($names, "$boxCraftingMenu1ScrollUp")
+
+
 _ArrayAdd($names, "$boxLevelMin")
 _ArrayAdd($names, "$boxLevelMax")
 _ArrayAdd($names, "$boxPref1Min")

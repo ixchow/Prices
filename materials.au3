@@ -17,25 +17,6 @@ Local $infoNames[2] = ['lastDay',  'last10'];
 HotKeySet("{ESC}", "Stop")
 HotKeySet("{F2}", "Go")
 
-;
-
-
-; locations
-Local $boxCraftingQuantity[4] = [355, 527, 463, 543]
-Local $boxCraftingPPU[4] = [905, 298, 1031, 327]
-Local $boxCraftingLast10 = ParseBox("X=875 Y=415 X=1112 Y=434")
-Local $boxCraftingLastDay = ParseBox("X=902 Y=441 X=1133 Y=462")
-Local $boxCraftingMenu0Arrow = ParseBox("X=505 Y=301 X=517 Y=312")
-Local $boxCraftingMenu1Arrow = ParseBox("X=504 Y=374 X=523 Y=391")
-Local $boxCraftingMenu2Arrow = ParseBox("X=505 Y=453 X=521 Y=467")
-Local $boxCraftingMenu0Dropdown = ParseBox("X=300 Y=337 X=525 Y=395")
-Local $boxCraftingMenu1Dropdown = ParseBox("X=300 Y=413 X=500 Y=870")
-Local $boxCraftingMenu2Dropdown = ParseBox("X=301 Y=491 X=523 Y=578")
-Local $boxCraftingMenu0 = SplitDropdown($boxCraftingMenu0Dropdown, 2)
-Local $boxCraftingMenu1 = SplitDropdown($boxCraftingMenu1Dropdown, 15) ; dye type or difficulty
-Local $boxCraftingMenu2 = SplitDropdown($boxCraftingMenu2Dropdown, 3) ; material
-Local $boxCraftingMenu1ScrollDown = ParseBox("X=547 Y=854 X=555 Y=864")
-Local $boxCraftingMenu1ScrollUp = ParseBox("X=546 Y=419 X=555 Y=427")
 
 Local $infoBoxes[2] = [$boxCraftingLastDay, $boxCraftingLast10]
 Local $outFile

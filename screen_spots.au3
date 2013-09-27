@@ -71,13 +71,34 @@ ElseIf @DesktopWidth == 1680 And @DesktopHeight == 1050 Then
 	$boxBid = ParseBox("X=1107 Y=301 X=1211 Y=764")
 	$boxBuyout = ParseBox("X=1211 Y=299 X=1315 Y=762")
 	$boxTimeLeft = ParseBox("X=1312 Y=298 X=1420 Y=761")
+
+	;crafting
+	$boxCraftingQuantity[4] = [355, 527, 463, 543]
+	$boxCraftingPPU[4] = [905, 298, 1031, 327]
+	$boxCraftingLast10 = ParseBox("X=875 Y=415 X=1112 Y=434")
+	$boxCraftingLastDay = ParseBox("X=902 Y=441 X=1133 Y=462")
+	$boxCraftingMenu0Arrow = ParseBox("X=505 Y=301 X=517 Y=312")
+	$boxCraftingMenu1Arrow = ParseBox("X=504 Y=374 X=523 Y=391")
+	$boxCraftingMenu2Arrow = ParseBox("X=505 Y=453 X=521 Y=467")
+	$boxCraftingMenu0Dropdown = ParseBox("X=300 Y=337 X=525 Y=395")
+	$boxCraftingMenu1Dropdown = ParseBox("X=300 Y=413 X=500 Y=870")
+	$boxCraftingMenu2Dropdown = ParseBox("X=301 Y=491 X=523 Y=578")
+	$boxCraftingMenu0 = SplitDropdown($boxCraftingMenu0Dropdown, 2)
+	$boxCraftingMenu1 = SplitDropdown($boxCraftingMenu1Dropdown, 15) ; dye type or difficulty
+	$boxCraftingMenu2 = SplitDropdown($boxCraftingMenu2Dropdown, 3) ; material
+	$boxCraftingMenu1ScrollDown = ParseBox("X=547 Y=854 X=555 Y=864")
+	$boxCraftingMenu1ScrollUp = ParseBox("X=546 Y=419 X=555 Y=427")
 Else
 	MsgBox(0, "Sorry", "Your screen size -- " & @DesktopWidth & " x " & @DesktopHeight & " -- unknown.");
 	Exit
 EndIf
 
+
 ; compute items in dropdowns
 $boxItemSubtype = SplitDropdown($boxItemSubtypeDropdown, 15)
+$boxCraftingMenu0 = SplitDropdown($boxCraftingMenu0Dropdown, 2)
+$boxCraftingMenu1 = SplitDropdown($boxCraftingMenu1Dropdown, 15) ; dye type or difficulty
+$boxCraftingMenu2 = SplitDropdown($boxCraftingMenu2Dropdown, 3) ; material
 
 ; lengths
 Local $lengthItemRowHeight = ($boxItem[3]-$boxItem[1])/11
