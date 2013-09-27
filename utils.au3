@@ -44,12 +44,12 @@ EndFunc   ;==>WriteValue
 
 Func Search()
 	;Move mouse away from search button:
-	MouseTo($boxItemTypeArrow)
+	MouseTo($boxCraftingMenu0Arrow)
 	Sleep(50)
 	Local $searchDoneSum = PixelChecksum($boxSearch[0], $boxSearch[1], $boxSearch[2], $boxSearch[3], 2)
 
 	Click($boxSearch)
-	MouseTo($boxItemTypeArrow)
+	MouseTo($boxCraftingMenu0Arrow)
 
 	;Wait for search to be done:
 	;ConsoleWrite("Waiting for search to finish...");
@@ -72,8 +72,12 @@ EndFunc
 Func OCR($x1, $y1, $x2, $y2, $arg, $filename="out")
 	_ScreenCapture_Capture($filename & ".bmp", Int($x1), Int($y1), Int($x2), Int($y2), False)
 	;RunWait(@ComSpec & " /c " & '"D:\Program Files (x86)\ImageMagick-6.8.6-Q16\convert" ' & $filename & ".bmp " & "-colorspace gray -negate -threshold 92% " & $filename & ".png ", "", @SW_HIDE)
+	If Not StringCompare(@OSVersion , "Win_7") Then
 	$command = @ComSpec & " /c " & '"D:\Program Files (x86)\Tesseract-OCR\tesseract" ' & $filename & ".bmp " & $filename & " " & $arg
-	;ConsoleWrite($command & @LF)
+	Else
+	$command = @ComSpec & " /c " & '"C:\Program Files\Tesseract-OCR\tesseract" ' & $filename & ".bmp " & $filename & " " & $arg
+	EndIf
+	ConsoleWrite($command & @LF)
 	RunWait($command, "", @SW_HIDE)
 	$s = FileRead($filename & ".txt")
 	Return $s

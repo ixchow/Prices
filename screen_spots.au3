@@ -1,4 +1,4 @@
-;On Search -> Equipment pane:
+
 Local $boxSearch
 
 Local $boxNext
@@ -52,6 +52,25 @@ If @DesktopWidth == 1600 And @DesktopHeight == 1200 Then
 	$boxLevelMax = ParseBox("X=263 Y=556 X=292 Y=577")
 	$boxPref1Min = ParseBox("X=407 Y=653 X=433 Y=670")
 
+ElseIf @DesktopWidth == 1280 And @DesktopHeight == 800 Then
+	$boxSearch = ParseBox("X=257 Y=614 X=373 Y=629")
+
+$boxCraftingQuantity = ParseBox("X=302 Y=404 X=337 Y=411")
+$boxCraftingPPU = ParseBox("X=696 Y=228 X=799 Y=245")
+$boxCraftingLast10 = ParseBox("X=667 Y=311 X=836 Y=332")
+$boxCraftingLastDay = ParseBox("X=688 Y=333 X=889 Y=354")
+$boxCraftingMenu0Arrow = ParseBox("X=384 Y=229 X=395 Y=238")
+$boxCraftingMenu1Arrow = ParseBox("X=385 Y=286 X=392 Y=294")
+$boxCraftingMenu2Arrow = ParseBox("X=386 Y=348 X=393 Y=354")
+Local $boxCraftingMenu0Dropdown = ParseBox("X=230 Y=258 X=398 Y=296")
+$boxCraftingMenu1Dropdown = ParseBox("X=229 Y=315 X=407 Y=644")
+$boxCraftingMenu2Dropdown = ParseBox("X=231 Y=374 X=393 Y=434")
+$boxCraftingMenu1ScrollDown = ParseBox("X=535 Y=479 X=535 Y=479")
+$boxCraftingMenu1ScrollUp = ParseBox("X=535 Y=479 X=535 Y=479")
+$boxLevelMin = ParseBox("X=535 Y=479 X=535 Y=479")
+$boxLevelMax = ParseBox("X=535 Y=479 X=535 Y=479")
+$boxPref1Min = ParseBox("X=535 Y=479 X=535 Y=479")
+
 ElseIf @DesktopWidth == 1680 And @DesktopHeight == 1050 Then
 	$boxLevelMin = ParseBox("X=302 Y=488 X=319 Y=498")
 	$boxLevelMax = ParseBox("X=373 Y=487 X=388 Y=497")
@@ -73,8 +92,8 @@ ElseIf @DesktopWidth == 1680 And @DesktopHeight == 1050 Then
 	$boxTimeLeft = ParseBox("X=1312 Y=298 X=1420 Y=761")
 
 	;crafting
-	$boxCraftingQuantity[4] = [355, 527, 463, 543]
-	$boxCraftingPPU[4] = [905, 298, 1031, 327]
+	$boxCraftingQuantity = ParseBox("X=355 Y=527 X=463 Y=543")
+	$boxCraftingPPU = ParseBox("X=905 Y=298 X=1031 Y=327")
 	$boxCraftingLast10 = ParseBox("X=875 Y=415 X=1112 Y=434")
 	$boxCraftingLastDay = ParseBox("X=902 Y=441 X=1133 Y=462")
 	$boxCraftingMenu0Arrow = ParseBox("X=505 Y=301 X=517 Y=312")
@@ -83,9 +102,6 @@ ElseIf @DesktopWidth == 1680 And @DesktopHeight == 1050 Then
 	$boxCraftingMenu0Dropdown = ParseBox("X=300 Y=337 X=525 Y=395")
 	$boxCraftingMenu1Dropdown = ParseBox("X=300 Y=413 X=500 Y=870")
 	$boxCraftingMenu2Dropdown = ParseBox("X=301 Y=491 X=523 Y=578")
-	$boxCraftingMenu0 = SplitDropdown($boxCraftingMenu0Dropdown, 2)
-	$boxCraftingMenu1 = SplitDropdown($boxCraftingMenu1Dropdown, 15) ; dye type or difficulty
-	$boxCraftingMenu2 = SplitDropdown($boxCraftingMenu2Dropdown, 3) ; material
 	$boxCraftingMenu1ScrollDown = ParseBox("X=547 Y=854 X=555 Y=864")
 	$boxCraftingMenu1ScrollUp = ParseBox("X=546 Y=419 X=555 Y=427")
 Else
@@ -95,13 +111,13 @@ EndIf
 
 
 ; compute items in dropdowns
-$boxItemSubtype = SplitDropdown($boxItemSubtypeDropdown, 15)
+;$boxItemSubtype = SplitDropdown($boxItemSubtypeDropdown, 15)
 $boxCraftingMenu0 = SplitDropdown($boxCraftingMenu0Dropdown, 2)
 $boxCraftingMenu1 = SplitDropdown($boxCraftingMenu1Dropdown, 15) ; dye type or difficulty
 $boxCraftingMenu2 = SplitDropdown($boxCraftingMenu2Dropdown, 3) ; material
 
 ; lengths
-Local $lengthItemRowHeight = ($boxItem[3]-$boxItem[1])/11
+;Local $lengthItemRowHeight = ($boxItem[3]-$boxItem[1])/11
 
 Func SplitDropdown($dropdown, $numItems)
 	Local $items[$numItems]
@@ -115,14 +131,6 @@ Func SplitDropdown($dropdown, $numItems)
 	Return $items
 EndFunc
 
-
-;For $i = 0 To 14
-	;Local $x1 = $boxItemSubtypeDropdown[0]
-	;Local $x2 = $boxItemSubtypeDropdown[2]
-	;Local $y1 = Int(($boxItemSubtypeDropdown[3] - $boxItemSubtypeDropdown[1]) * ($i + 0.1) / 15 + $boxItemSubtypeDropdown[1])
-	;Local $y2 = Int(($boxItemSubtypeDropdown[3] - $boxItemSubtypeDropdown[1]) * ($i + 0.9) / 15 + $boxItemSubtypeDropdown[1])
-	;$boxItemSubtype[$i] = ParseBox("X="&$x1&" Y="&$y1&" X="&$x2&" Y="&$y2)
-;Next
 
 Func ParseBox($s)
 	Local $res = StringRegExp($s, 'X=(\d+) Y=(\d+) X=(\d+) Y=(\d+)', 1)
