@@ -4,43 +4,43 @@ HotKeySet("{ESC}", "Stop")
 HotKeySet("{F2}", "Go")
 
 While 1
-    Sleep(100)
+	Sleep(100)
 WEnd
 
 Func Stop()
 	Exit
-EndFunc
+EndFunc   ;==>Stop
 
 Func MouseTo($box)
-	MouseMove( Random($box[0], $box[2]), Random($box[1], $box[3]), 2 )
-EndFunc
+	MouseMove(Random($box[0], $box[2]), Random($box[1], $box[3]), 2)
+EndFunc   ;==>MouseTo
 
 Func Click($box)
 	MouseTo($box)
 	MouseClick("left")
-EndFunc
+EndFunc   ;==>Click
 
 Func WriteValue($box, $val)
 	Click($box)
-	Sleep(Random(10,20))
+	Sleep(Random(10, 20))
 	Send("{BS}")
-	Sleep(Random(10,20))
+	Sleep(Random(10, 20))
 	Send("{BS}")
-	Sleep(Random(10,20))
+	Sleep(Random(10, 20))
 	Send("{BS}")
-	Sleep(Random(10,20))
+	Sleep(Random(10, 20))
 	Send("{DEL}")
-	Sleep(Random(10,20))
+	Sleep(Random(10, 20))
 	Send("{DEL}")
-	Sleep(Random(10,20))
+	Sleep(Random(10, 20))
 	Send("{DEL}")
-	Sleep(Random(10,20))
+	Sleep(Random(10, 20))
 	$split = StringSplit("" & $val, "")
 	For $i = 1 To $split[0]
 		Send($split[$i])
-		Sleep(Random(10,20))
+		Sleep(Random(10, 20))
 	Next
-EndFunc
+EndFunc   ;==>WriteValue
 
 Func Search()
 	;Move mouse away from search button:
@@ -56,14 +56,14 @@ Func Search()
 	While 1
 		Sleep(50)
 		Local $searchSum = PixelChecksum($boxSearch[0], $boxSearch[1], $boxSearch[2], $boxSearch[3], 2)
-		if $searchSum == $searchDoneSum Then
+		If $searchSum == $searchDoneSum Then
 			ExitLoop
 		Else
 			;ConsoleWrite('.')
 		EndIf
 	WEnd
 	;ConsoleWrite(" done." & @CRLF);
-EndFunc
+EndFunc   ;==>Search
 
 Func Go()
 	ConsoleWrite("Script is running" & @CRLF)
@@ -91,12 +91,12 @@ Func Go()
 			WriteValue($boxLevelMax, $lev)
 			Search()
 			Local $resultsSum = PixelChecksum($boxItem[0], $boxItem[1], $boxItem[2], $boxItem[3], 2)
-			if Not ($resultsSum == $noResultsSum) Then
+			If Not ($resultsSum == $noResultsSum) Then
 				ExitLoop
 			EndIf
 			$lev = $lev + 1
 		WEnd
-		if $lev == 61 Then
+		If $lev == 61 Then
 			ConsoleWrite("Ran out." & @CRLF)
 			ExitLoop
 		EndIf
@@ -106,7 +106,7 @@ Func Go()
 			WriteValue($boxPref1Min, $val)
 			Search()
 			Local $resultsSum = PixelChecksum($boxItem[0], $boxItem[1], $boxItem[2], $boxItem[3], 2)
-			if $resultsSum == $noResultsSum Then
+			If $resultsSum == $noResultsSum Then
 				$val = $val - 1
 				ExitLoop
 			EndIf
@@ -116,13 +116,13 @@ Func Go()
 	WEnd
 
 
-;	Local $col = PixelGetColor($pixNextArrow[0], $pixNextArrow[1])
-;	$b = Mod($col, 256)
-;	$g = Mod(Int($col / 256), 256)
-;	$r = Mod(Int($col / 256 / 256), 256)
-;	ConsoleWrite("Color: " & Hex($col) & " or (" & $r & ", " & $g & ", " & $b & ")" & @CRLF)
-;Have results -- Color: 00FCDB9E or (252, 219, 158)
-;No results -- Color: 00948873 or (148, 136, 115)
+	;	Local $col = PixelGetColor($pixNextArrow[0], $pixNextArrow[1])
+	;	$b = Mod($col, 256)
+	;	$g = Mod(Int($col / 256), 256)
+	;	$r = Mod(Int($col / 256 / 256), 256)
+	;	ConsoleWrite("Color: " & Hex($col) & " or (" & $r & ", " & $g & ", " & $b & ")" & @CRLF)
+	;Have results -- Color: 00FCDB9E or (252, 219, 158)
+	;No results -- Color: 00948873 or (148, 136, 115)
 
 	;For $i = 0 To 14
 	;	MouseTo($boxItemSubtypeArrow)
@@ -140,4 +140,4 @@ Func Go()
 	;	MouseClick("left")
 	;Next
 	Exit
-EndFunc
+EndFunc   ;==>Go
