@@ -63,6 +63,66 @@ var graph = {
 		}
 		window.requestAnimFrame(function() { graph.updateTime(); } );
 	}, */
+	drawRange:function(ctx, minTime, maxTime, at, size) {
+		var xScale = size.width / (maxTime - minTime);
+		var xOfs = at.x - minTime * xScale;
+
+		for (var s = 0; s < this.data.length; ++s) {
+			var series = this.data[s];
+			var yScale = -size.height / series.maxVal;
+			var yOfs = at.y + size.height;
+
+			var prev = [];
+			var started = false;
+			var ended = false;
+			for (var i = 0; i < series.vals.length; ++i) {
+				var pair = series.vals[i];
+				var time = pair[0];
+				var val = pair[1];
+				var x = time * xScale + xOfs;
+				var y = val * yScale + yOfs;
+
+				if (time < minTime) {
+					prev = [x,y];
+					continue;
+				}
+				if (time > maxTime) {
+					if (ended) {
+						break;
+					} else {
+						ended = true;
+					}
+				}
+				if (val < 0) {
+					if (started) {
+						ctx.moveTo(prev[0] - 2, prev[1] - 2);
+						ctx.lineTo(prev[0] + 2, prev[1] + 2);
+						ctx.moveTo(prev[0] - 2, prev[1] + 2);
+						ctx.lineTo(prev[0] + 2, prev[1] - 2);
+						//TODO: draw 'x' to mark break
+						ctx.stroke();
+						started = false;
+					}
+					prev = [];
+					continue;
+				}
+				if (!started) {
+					started = true;
+					ctx.beginPath();
+					if (prev.length && prev[1] >= 0) {
+						ctx.moveTo(prev[0], prev[1]);
+					} else {
+						ctx.moveTo(x, y);
+					}
+				}
+				ctx.lineTo(x, y);
+				prev = [x,y];
+			}
+			if (started) {
+				ctx.stroke();
+			}
+		}
+	},
 	draw:function(el) {
 		var canvasWidth = el.width;
 		var canvasHeight = el.height;
@@ -82,84 +142,11 @@ var graph = {
 
 		//Draw overview:
 		ctx.strokeStyle = "#000";
-		for (var s = 0; s < this.data.length; ++s) {
-			var series = this.data[s];
-			ctx.beginPath();
-			var prev = [];
-			for (var i = 0; i < series.vals.length; ++i) {
-				var pair = series.vals[i];
-				var time = pair[0];
-				var val = pair[1];
-				if (val < 0) {
-					if (prev.length) {
-						ctx.stroke();
-						ctx.beginPath();
-						ctx.moveTo(prev[0]-2, prev[1]-2);
-						ctx.lineTo(prev[0]+2, prev[1]+2);
-						ctx.moveTo(prev[0]-2, prev[1]+2);
-						ctx.lineTo(prev[0]+2, prev[1]-2);
-						ctx.stroke();
-						ctx.beginPath();
-						prev = [];
-					}
-					continue;
-				}
-				var x = (time - this.minTime) / (this.maxTime - this.minTime) * canvasWidth;
-				var y = canvasHeight - OVERVIEW_HEIGHT * val / series.maxVal;
-				if (!prev.length) {
-					ctx.moveTo(x,y);
-					first = false;
-				} else {
-					ctx.lineTo(x,y);
-				}
-				prev = [x,y];
-			}
-			ctx.stroke();
-		}
-
+		this.drawRange(ctx, this.minTime, this.maxTime, {x:0,y:canvasHeight - OVERVIEW_HEIGHT}, {width:canvasWidth, height:OVERVIEW_HEIGHT});
 
 		//Draw focued range:
 		ctx.strokeStyle = "#000";
-		prev = [];
-		for (var s = 0; s < this.data.length; ++s) {
-			var series = this.data[s];
-			ctx.beginPath();
-			var prev = [];
-			for (var i = 0; i < series.vals.length; ++i) {
-				var pair = series.vals[i];
-				var time = pair[0];
-				var val = pair[1];
-				if (time < viewMinTime) {
-					continue;
-				}
-				if (val < 0) {
-					if (prev.length) {
-						ctx.stroke();
-						ctx.beginPath();
-						ctx.moveTo(prev[0]-4, prev[1]-4);
-						ctx.lineTo(prev[0]+4, prev[1]+4);
-						ctx.moveTo(prev[0]-4, prev[1]+4);
-						ctx.lineTo(prev[0]+4, prev[1]-4);
-						ctx.stroke();
-						ctx.beginPath();
-						prev = [];
-					}
-					continue;
-				}
-				var x = (time - viewMinTime) / (viewMaxTime - viewMinTime) * canvasWidth;
-				var y = canvasHeight - (canvasHeight - OVERVIEW_HEIGHT) * val / series.maxVal;
-				if (!prev.length) {
-					ctx.moveTo(x,y);
-					first = false;
-				} else {
-					ctx.lineTo(x,y);
-				}
-				prev = [x,y];
-			}
-			ctx.stroke();
-		}
-
-
+		this.drawRange(ctx, viewMinTime, viewMaxTime, {x:0,y:0}, {width:canvasWidth, height:canvasHeight - OVERVIEW_HEIGHT});
 
 	}
 };
@@ -168,11 +155,10 @@ function updateGraph() {
 
 	var el = document.getElementById('chart');
 
-	if (el.width != el.clientWidth
-	 || el.height != el.clientHeight) {
+	if (el.width != el.clientWidth || el.height != el.clientHeight) {
 		el.width = el.clientWidth;
 		el.height = el.clientHeight;
-		graphDirty = true;
+		graph.dirty = true;
 	}
 
 	if (!graph.dirty) return;
@@ -256,7 +242,17 @@ function setup() {
         };
 	window.requestAnimFrame(updateGraph);
 	//window.requestAnimFrame(function() { graph.updateTime(); } );
-	window.onresize = function() {
-		window.requestAnimFrame(updateGraph);
-	};
+	window.onresize = function() { window.requestAnimFrame(updateGraph); };
+
+	var target = document.getElementById('drop-target');
+	window.addEventListener('dragover', function(e){
+		e.stopPropagation();
+		e.preventDefault();
+		e.dataTransfer.dropEffect = 'copy';
+	}, false);
+	window.addEventListener('drop', function(e){
+		e.stopPropagation();
+		e.preventDefault();
+		document.getElementById('files').files = e.dataTransfer.files;
+	}, false);
 }
