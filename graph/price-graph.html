@@ -3,11 +3,27 @@
 <head>
 <title>Price Graph</title>
 <script type="text/javascript" src="price-graph.js" ></script>
+<style>
+#chart-div {
+	width:auto;
+	margin:10px 5px;
+	border:2px solid black;
+	height:500px;
+	background:#fee;
+}
+#chart {
+	width:100%;
+	height:100%;
+	margin:0;
+}
+</style>
 </head>
 <body onload="setup();" >
 <form>
 <input type="file" id="files" multiple />
 </form>
-<canvas id='chart' width='700px' height='500px'></canvas>
+<div id='chart-div'>
+<canvas id='chart'></canvas>
+</div>
 </body>
 </html>
