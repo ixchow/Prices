@@ -10,6 +10,7 @@ var graph = {
 	maxVal:1,
 	viewLength:24 * 60 * 60 * 1000,
 	viewMaxTime:0,
+	mouse:null,
 	queueUpdate:function() {
 		if (!this.dirty) {
 			this.dirty = true;
@@ -55,19 +56,27 @@ var graph = {
 		}
 		this.viewMaxTime = this.maxTime;
 	},
-	/* updateTime:function() {
-		var newViewMaxTime = Math.floor((new Date()).getTime() / 1000) * 1000;
-		if (this.viewMaxTime != newViewMaxTime) {
-			this.viewMaxTime = newViewMaxTime;
-			this.queueUpdate();
+	drawRange:function(ctx, minTime, maxTime, at, size, options) {
+		if (typeof options == "undefined") {
+			options = {};
 		}
-		window.requestAnimFrame(function() { graph.updateTime(); } );
-	}, */
-	drawRange:function(ctx, minTime, maxTime, at, size) {
+
 		var xScale = size.width / (maxTime - minTime);
 		var xOfs = at.x - minTime * xScale;
 
 		for (var s = 0; s < this.data.length; ++s) {
+
+			if ('label' in options) {
+				var hex = (s + 1).toString();
+				while (hex.length < 2) hex = "0" + hex;
+				ctx.strokeStyle = "#" + hex + hex + hex;
+			} else if ('selected' in options) {
+				if (s == options.selected) {
+					ctx.strokeStyle = "#f00";
+				} else {
+					ctx.strokeStyle = "#000";
+				}
+			}
 			var series = this.data[s];
 			var yScale = -size.height / series.maxVal;
 			var yOfs = at.y + size.height;
@@ -123,10 +132,39 @@ var graph = {
 			}
 		}
 	},
-	draw:function(el) {
+	draw:function(el, label) {
 		var canvasWidth = el.width;
 		var canvasHeight = el.height;
 		var ctx = el.getContext('2d');
+
+
+		viewMaxTime = this.viewMaxTime;
+		viewMinTime = viewMaxTime - this.viewLength;
+
+		var lctx = label.getContext('2d');
+		//Draw focused range to label canvas:
+		if (label.width != canvasWidth || label.height != canvasHeight) {
+			label.width = canvasWidth;
+			label.height = canvasHeight;
+		}
+		lctx.setTransform(1,0, 0,1, 0,0);
+		lctx.fillStyle = "#000";
+		lctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+		lctx.lineWidth = 5;
+		this.drawRange(lctx, viewMinTime, viewMaxTime, {x:0,y:0}, {width:canvasWidth, height:canvasHeight - OVERVIEW_HEIGHT}, {label:null});
+
+		if (this.mouse) {
+			var val = lctx.getImageData(this.mouse.x, this.mouse.y, 1, 1).data;
+			this.selected = -1;
+			for (var s = 0; s < this.data.length; ++s) {
+				if (val[0] == s + 1) {
+					this.selected = s;
+					break;
+				}
+			}
+		}
+
 
 		ctx.setTransform(1,0, 0,1, 0,0);
 		ctx.fillStyle = "#eee";
@@ -134,20 +172,19 @@ var graph = {
 
 		ctx.fillStyle = "#ccc";
 		ctx.fillRect(0, canvasHeight - OVERVIEW_HEIGHT, canvasWidth, OVERVIEW_HEIGHT);
-		viewMaxTime = this.viewMaxTime;
-		viewMinTime = viewMaxTime - this.viewLength;
 
 		ctx.fillStyle = "#fff";
 		ctx.fillRect((viewMinTime - this.minTime) / (this.maxTime - this.minTime) * canvasWidth, canvasHeight - OVERVIEW_HEIGHT, (viewMaxTime - viewMinTime) / (this.maxTime - this.minTime) * canvasWidth, OVERVIEW_HEIGHT);
 
 		//Draw overview:
 		ctx.strokeStyle = "#000";
-		this.drawRange(ctx, this.minTime, this.maxTime, {x:0,y:canvasHeight - OVERVIEW_HEIGHT}, {width:canvasWidth, height:OVERVIEW_HEIGHT});
+		this.drawRange(ctx, this.minTime, this.maxTime, {x:0,y:canvasHeight - OVERVIEW_HEIGHT}, {width:canvasWidth, height:OVERVIEW_HEIGHT}, {selected:this.selected});
 
-		//Draw focued range:
+		//Draw focused range:
 		ctx.strokeStyle = "#000";
-		this.drawRange(ctx, viewMinTime, viewMaxTime, {x:0,y:0}, {width:canvasWidth, height:canvasHeight - OVERVIEW_HEIGHT});
+		this.drawRange(ctx, viewMinTime, viewMaxTime, {x:0,y:0}, {width:canvasWidth, height:canvasHeight - OVERVIEW_HEIGHT}, {selected:this.selected});
 
+	
 	}
 };
 
@@ -165,7 +202,7 @@ function updateGraph() {
 	graph.dirty = false;
 
 	graph.updateRange();
-	graph.draw(el);
+	graph.draw(el, document.getElementById('chart-labels'));
 
 }
 
@@ -187,10 +224,10 @@ function gotData(name, rawData) {
 		if (series.name == name) {
 			if (series.vals.length != vals.length) {
 				console.log("updating series '" + name + "'");
-				series.updated = true;
 				graph.queueUpdate();
 			}
 			series.vals = vals;
+			series.updated = null;
 			found = true;
 		}
 	}
@@ -199,19 +236,26 @@ function gotData(name, rawData) {
 		graph.data.push({
 			name:name,
 			vals:vals,
-			updated:true
+			updated:null,
 		});
 		graph.queueUpdate();
 	}
 }
 
 function readFile(file) {
+	for (var i = 0; i < graph.data.length; ++i) {
+		var series = graph.data[i];
+		delete series.updated;
+	}
 	var reader = new FileReader;
 	reader.onloadend = function(){
 		if (reader.result) {
 			gotData(file.name, reader.result);
 		}
 	};
+	graph.data = graph.data.filter(function(series){
+		return "updated" in series;
+	});
 	reader.readAsText(file);
 }
 
@@ -241,10 +285,8 @@ function setup() {
           window.setTimeout(callback, 1000 / 60);
         };
 	window.requestAnimFrame(updateGraph);
-	//window.requestAnimFrame(function() { graph.updateTime(); } );
 	window.onresize = function() { window.requestAnimFrame(updateGraph); };
 
-	var target = document.getElementById('drop-target');
 	window.addEventListener('dragover', function(e){
 		e.stopPropagation();
 		e.preventDefault();
@@ -255,4 +297,15 @@ function setup() {
 		e.preventDefault();
 		document.getElementById('files').files = e.dataTransfer.files;
 	}, false);
+
+	var chart = document.getElementById('chart');
+	chart.addEventListener('mouseout', function(e){
+		graph.mouse = null;
+	}, false);
+	chart.addEventListener('mousemove', function(e){
+		graph.mouse = {x:e.offsetX, y:e.offsetY};
+		graph.queueUpdate();
+	}, false);
+
+
 }
