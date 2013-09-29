@@ -81,7 +81,7 @@ Func OCR($x1, $y1, $x2, $y2, $arg, $filename="out")
 	Else
 	$command = @ComSpec & " /c " & '"C:\Program Files\Tesseract-OCR\tesseract" ' & $filename & ".bmp " & $filename & " " & $arg
 	EndIf
-	ConsoleWrite($command & @LF)
+	;ConsoleWrite($command & @LF)
 	RunWait($command, "", @SW_HIDE)
 	$s = FileRead($filename & ".txt")
 	Return $s

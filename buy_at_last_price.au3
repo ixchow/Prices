@@ -29,7 +29,7 @@ Func Go()
 	Click($tabCompleted)
 	Sleep(500)
 	$targetPrice = ReadPrice($boxCompletedAmount)
-	ConsoleWrite($targetPrice & @CRLF)
+	ConsoleWrite("Target price is " & $targetPrice & @CRLF)
 
 	While 1
 
@@ -54,11 +54,14 @@ Func Go()
 		WEnd
 
 		Click($tabCompleted)
-		Sleep(500)
+		Sleep(1000)
+		For $clickTimes = 0 To 1
+			ClickWait($boxSendToStash)
+		Next
 		$curPrice = ReadPrice($boxCompletedAmount)
-		ConsoleWrite($curPrice & @CRLF)
 
-		if $curPrice > $targetPrice
+		if $curPrice > $targetPrice Then
+			ConsoleWrite("Bought at " & $curPrice & ", so stopping." & @CRLF)
 			ExitLoop
 		EndIf
 	WEnd
