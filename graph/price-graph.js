@@ -68,7 +68,7 @@ var graph = {
 		var xScale = size.width / (maxTime - minTime);
 		var xOfs = at.x - minTime * xScale;
 
-		var dis = 10 * 10;
+		var dis = 1000 * 10;
 
 		for (var s = 0; s < this.data.length; ++s) {
 			var series = this.data[s];
@@ -178,8 +178,12 @@ var graph = {
 			this.drawRange(ctx, viewMinTime, viewMaxTime, {x:0,y:0}, {width:canvasWidth, height:canvasHeight - OVERVIEW_HEIGHT}, {update:null});
 		}
 		if (this.selected) {
+			var date = new Date(this.selected.vals[this.selectedIdx][0]);
+
 			var val = this.selected.vals[this.selectedIdx][1];
-			document.getElementById('selected-label').innerText = this.selected.name + " at " + val;
+			document.getElementById('selected-label').innerText = this.selected.name + "\n" + (date.getMonth()+1) + "/" 
+										+ date.getDate() + "/" + date.getFullYear() + " "
+										+ date.getHours() + ":" + date.getMinutes() + "\t" + val;
 			//show 85% range:
 			var graphHeight = canvasHeight - OVERVIEW_HEIGHT;
 			var lowVal,highVal;
