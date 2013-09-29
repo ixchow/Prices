@@ -68,7 +68,7 @@ var graph = {
 		var xScale = size.width / (maxTime - minTime);
 		var xOfs = at.x - minTime * xScale;
 
-		var dis = 10 * 10;
+		var dis = 1000 * 10;
 
 		for (var s = 0; s < this.data.length; ++s) {
 			var series = this.data[s];
@@ -137,6 +137,17 @@ var graph = {
 					}
 				}
 				ctx.lineTo(x, y);
+				if ('showPoints' in options) {
+					// highlight selected point
+					if (i == this.selectedIdx && series == this.selected) {
+						ctx.fillStyle="#f00";
+						ctx.fillRect(x-3, y-3, 6, 6)
+					} else {
+						ctx.fillStyle="#000";
+						ctx.fillRect(x-2, y-2, 4, 4)
+					}
+
+				}
 				prev = [x,y];
 			}
 			if (started) {
@@ -167,8 +178,12 @@ var graph = {
 			this.drawRange(ctx, viewMinTime, viewMaxTime, {x:0,y:0}, {width:canvasWidth, height:canvasHeight - OVERVIEW_HEIGHT}, {update:null});
 		}
 		if (this.selected) {
+			var date = new Date(this.selected.vals[this.selectedIdx][0]);
+
 			var val = this.selected.vals[this.selectedIdx][1];
-			document.getElementById('selected-label').innerText = this.selected.name + " at " + val;
+			document.getElementById('selected-label').innerText = this.selected.name + "\n" + (date.getMonth()+1) + "/" 
+										+ date.getDate() + "/" + date.getFullYear() + " "
+										+ date.getHours() + ":" + date.getMinutes() + "\t" + val;
 			//show 85% range:
 			var graphHeight = canvasHeight - OVERVIEW_HEIGHT;
 			var lowVal,highVal;
@@ -182,6 +197,7 @@ var graph = {
 			highVal = (1 - (val / 0.85) / this.selected.maxVal) * OVERVIEW_HEIGHT + graphHeight;
 			ctx.fillStyle = "#efe";
 			ctx.fillRect(0, highVal, canvasWidth, lowVal - highVal);
+
 		} else {
 			document.getElementById('selected-label').innerText = "(no selection)";
 		}
@@ -196,7 +212,7 @@ var graph = {
 
 		//Draw focused range:
 		ctx.strokeStyle = "#000";
-		this.drawRange(ctx, viewMinTime, viewMaxTime, {x:0,y:0}, {width:canvasWidth, height:canvasHeight - OVERVIEW_HEIGHT});
+		this.drawRange(ctx, viewMinTime, viewMaxTime, {x:0,y:0}, {width:canvasWidth, height:canvasHeight - OVERVIEW_HEIGHT}, {showPoints:null});
 
 	
 	}
