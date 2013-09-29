@@ -43,9 +43,10 @@ Func WriteValue($box, $val)
 EndFunc   ;==>WriteValue
 
 Func Search()
+
 	;Move mouse away from search button:
 	MouseTo($boxCraftingMenu0Arrow)
-	Sleep(50)
+	Sleep(1000)
 	Local $searchDoneSum = PixelChecksum($boxSearch[0], $boxSearch[1], $boxSearch[2], $boxSearch[3], 2)
 
 	Click($boxSearch)
@@ -77,7 +78,7 @@ Func OCR($x1, $y1, $x2, $y2, $arg, $filename="out")
 	Else
 	$command = @ComSpec & " /c " & '"C:\Program Files\Tesseract-OCR\tesseract" ' & $filename & ".bmp " & $filename & " " & $arg
 	EndIf
-	ConsoleWrite($command & @LF)
+	;ConsoleWrite($command & @LF)
 	RunWait($command, "", @SW_HIDE)
 	$s = FileRead($filename & ".txt")
 	Return $s

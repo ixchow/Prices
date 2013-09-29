@@ -73,7 +73,7 @@ Func Go()
 				for $infoInd = 0 To UBound($infoNames)-1
 					$curInfo = ReadAvg($infoBoxes[$infoInd])
 
-					$outName = "commodity_out\" & $types[0] & "_" & $diffs[$diffInd] & "_" & $craftingTypes[$matInd] & "_" & $infoNames[$infoInd] & ".txt"
+					$outName = "Dropbox\commodity_out\" & $types[0] & "_" & $diffs[$diffInd] & "_" & $craftingTypes[$matInd] & "_" & $infoNames[$infoInd] & ".txt"
 					$outFile = FileOpen($outName, 1)
 					TimeStamp($outFile)
 					FileWrite($outFile, $curInfo & @CRLF)
@@ -108,7 +108,7 @@ Func Go()
 				for $infoInd = 0 To UBound($infoNames)-1
 					$curInfo = ReadAvg($infoBoxes[$infoInd])
 
-					$outName = "commodity_out\" & $types[1] & "_" & $dyeTypes[$dyeInd] & "_" & $infoNames[$infoInd] & ".txt"
+					$outName = "Dropbox\commodity_out\" & $types[1] & "_" & $dyeTypes[$dyeInd] & "_" & $infoNames[$infoInd] & ".txt"
 					$outFile = FileOpen($outName, 1)
 					TimeStamp($outFile)
 					FileWrite($outFile, $curInfo & @CRLF)
@@ -117,7 +117,6 @@ Func Go()
 
 	Next
 
-	FileWrite($outFile, @CRLF)
-	Sleep(Random(5*60e3, 10*60e3))
+	Sleep(Random(2*60e3, 5*60e3))
 	WEnd
 EndFunc
