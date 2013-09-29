@@ -51,6 +51,8 @@ Func Go()
 	While 1
 
 	; scan the market
+	Local $bestGainInd[3]
+	$bestGain = -9999999
 
 	; crafting
 	Click($boxCraftingMenu0Arrow)
@@ -70,8 +72,12 @@ Func Go()
 
 
 				Search()
+				Sleep(Random(10, 50))
+
+				Local $infoVect[UBound($infoNames)]
 				for $infoInd = 0 To UBound($infoNames)-1
 					$curInfo = ReadAvg($infoBoxes[$infoInd])
+					$infoVect[$infoInd] = $curInfo
 
 					$outName = "commodity_out\" & $types[0] & "_" & $diffs[$diffInd] & "_" & $craftingTypes[$matInd] & "_" & $infoNames[$infoInd] & ".txt"
 					$outFile = FileOpen($outName, 1)
@@ -79,11 +85,19 @@ Func Go()
 					FileWrite($outFile, $curInfo & @CRLF)
 					FileClose($outFile)
 				Next
+				$gain = ($infoVect[0]*.85 - $infoVect[1]) / $infoVect[1]
+				If $gain > $bestGain Then
+					$bestGain = $gain
+					$bestGainInd[0] = 0
+					$bestGainInd[1] = $diffInd
+					$bestGainInd[2] = $matInd
+				EndIf
 
-				;Sleep(Random(10, 50))
 
 		Next
 	Next
+	ConsoleWrite($types[$bestGainInd[0]] & " " & $diffs[$bestGainInd[1]] & " " & $craftingTypes[$bestGainInd[2]]  & @CRLF)
+	ConsoleWrite($bestGain & @CRLF)
 
 	; dyes
 	Click($boxCraftingMenu0Arrow)
@@ -105,15 +119,27 @@ Func Go()
 		EndIf
 
 		Search()
-				for $infoInd = 0 To UBound($infoNames)-1
-					$curInfo = ReadAvg($infoBoxes[$infoInd])
+		Sleep(Random(10, 50))
 
-					$outName = "commodity_out\" & $types[1] & "_" & $dyeTypes[$dyeInd] & "_" & $infoNames[$infoInd] & ".txt"
-					$outFile = FileOpen($outName, 1)
-					TimeStamp($outFile)
-					FileWrite($outFile, $curInfo & @CRLF)
-					FileClose($outFile)
-				Next
+		Local $infoVect[UBound($infoNames)]
+		for $infoInd = 0 To UBound($infoNames)-1
+			$curInfo = ReadAvg($infoBoxes[$infoInd])
+			$infoVect[$infoInd] = $curInfo
+
+			$outName = "commodity_out\" & $types[1] & "_" & $dyeTypes[$dyeInd] & "_" & $infoNames[$infoInd] & ".txt"
+			$outFile = FileOpen($outName, 1)
+			TimeStamp($outFile)
+			FileWrite($outFile, $curInfo & @CRLF)
+			FileClose($outFile)
+		Next
+
+		$gain = ($infoVect[0]*.85 - $infoVect[1]) / $infoVect[1]
+		If $gain > $bestGain Then
+			$bestGain = $gain
+			$bestGainInd[0] = 0
+			$bestGainInd[1] = $diffInd
+			$bestGainInd[2] = $matInd
+		EndIf
 
 	Next
 

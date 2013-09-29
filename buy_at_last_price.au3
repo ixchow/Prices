@@ -34,7 +34,7 @@ Func Go()
 	While 1
 
 		Click($tabSearch)
-		Sleep(50)
+		Sleep(500)
 		Click($boxCraftingBuyout)
 		Click($boxCraftingBuyout)
 		Click($boxCraftingBuyoutConfirm)
@@ -54,15 +54,17 @@ Func Go()
 		WEnd
 
 		Click($tabCompleted)
-		Sleep(1000)
-		For $clickTimes = 0 To 1
-			ClickWait($boxSendToStash)
-		Next
-		$curPrice = ReadPrice($boxCompletedAmount)
+		Sleep(2000)
 
+		ClickWait($boxSendToStash)
+		Click($boxSendToStash)
+
+		$curPrice = ReadPrice($boxCompletedAmount)
+		ConsoleWrite("Bought at " & $curPrice)
 		if $curPrice > $targetPrice Then
-			ConsoleWrite("Bought at " & $curPrice & ", so stopping." & @CRLF)
+			ConsoleWrite( ", so stopping.")
 			ExitLoop
 		EndIf
+		ConsoleWrite(@CRLF)
 	WEnd
 EndFunc
