@@ -42,20 +42,20 @@ Func WriteValue($box, $val)
 	Next
 EndFunc   ;==>WriteValue
 
-Func Search()
+Func ClickWait($box)
 	;Move mouse away from search button:
-	MouseTo($boxCraftingMenu0Arrow)
+	MouseMove(1, 1, 2)
 	Sleep(50)
-	Local $searchDoneSum = PixelChecksum($boxSearch[0], $boxSearch[1], $boxSearch[2], $boxSearch[3], 2)
+	Local $searchDoneSum = PixelChecksum($box[0], $box[1], $box[2], $box[3], 2)
 
-	Click($boxSearch)
-	MouseTo($boxCraftingMenu0Arrow)
+	Click($box)
+	MouseMove(1, 1, 2)
 
 	;Wait for search to be done:
 	;ConsoleWrite("Waiting for search to finish...");
 	While 1
 		Sleep(50)
-		Local $searchSum = PixelChecksum($boxSearch[0], $boxSearch[1], $boxSearch[2], $boxSearch[3], 2)
+		Local $searchSum = PixelChecksum($box[0], $box[1], $box[2], $box[3], 2)
 		If $searchSum == $searchDoneSum Then
 			ExitLoop
 		Else
@@ -63,6 +63,10 @@ Func Search()
 		EndIf
 	WEnd
 	;ConsoleWrite(" done." & @CRLF);
+	EndFunc
+
+Func Search()
+	ClickWait($boxSearch)
 EndFunc   ;==>Search
 
 Func OCRBox($box, $arg, $filename="out")
@@ -81,4 +85,8 @@ Func OCR($x1, $y1, $x2, $y2, $arg, $filename="out")
 	RunWait($command, "", @SW_HIDE)
 	$s = FileRead($filename & ".txt")
 	Return $s
+EndFunc
+
+Func BoxChecksum($box)
+	Return PixelChecksum($box[0], $box[1], $box[2], $box[3], 2)
 EndFunc

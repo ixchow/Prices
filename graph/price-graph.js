@@ -137,6 +137,17 @@ var graph = {
 					}
 				}
 				ctx.lineTo(x, y);
+				if ('showPoints' in options) {
+					// highlight selected point
+					if (i == this.selectedIdx && series == this.selected) {
+						ctx.fillStyle="#f00";
+						ctx.fillRect(x-3, y-3, 6, 6)
+					} else {
+						ctx.fillStyle="#000";
+						ctx.fillRect(x-2, y-2, 4, 4)
+					}
+
+				}
 				prev = [x,y];
 			}
 			if (started) {
@@ -182,6 +193,7 @@ var graph = {
 			highVal = (1 - (val / 0.85) / this.selected.maxVal) * OVERVIEW_HEIGHT + graphHeight;
 			ctx.fillStyle = "#efe";
 			ctx.fillRect(0, highVal, canvasWidth, lowVal - highVal);
+
 		} else {
 			document.getElementById('selected-label').innerText = "(no selection)";
 		}
@@ -196,7 +208,7 @@ var graph = {
 
 		//Draw focused range:
 		ctx.strokeStyle = "#000";
-		this.drawRange(ctx, viewMinTime, viewMaxTime, {x:0,y:0}, {width:canvasWidth, height:canvasHeight - OVERVIEW_HEIGHT});
+		this.drawRange(ctx, viewMinTime, viewMaxTime, {x:0,y:0}, {width:canvasWidth, height:canvasHeight - OVERVIEW_HEIGHT}, {showPoints:null});
 
 	
 	}

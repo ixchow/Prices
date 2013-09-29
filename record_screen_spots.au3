@@ -18,6 +18,19 @@ Global $names[1]
 $names[0] = "trash"
 
 
+_ArrayAdd($names, "$checksumProcessingAuction")
+
+_ArrayAdd($names, "$tabCompleted")
+_ArrayAdd($names, "$tabSearch")
+_ArrayAdd($names, "$boxCompletedTransaction")
+_ArrayAdd($names, "$boxCompletedAmount")
+_ArrayAdd($names, "$boxCraftingBuyout")
+_ArrayAdd($names, "$boxCraftingBuyoutConfirm")
+_ArrayAdd($names, "$boxAuctionOK")
+_ArrayAdd($names, "$boxSendToStash")
+
+
+
 _ArrayAdd($names, "$boxCraftingQuantity")
 _ArrayAdd($names, "$boxCraftingPPU")
 _ArrayAdd($names, "$boxCraftingLast10")

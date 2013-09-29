@@ -29,7 +29,7 @@ Local $boxLevelMin
 Local $boxLevelMax
 Local $boxPref1Min
 
-If @DesktopWidth == 1600 And @DesktopHeight == 1200 Then
+If @DesktopWidth == 1600 And @DesktopHeight == 1200 Then ; ???
 	$boxSearch = ParseBox("X=330 Y=803 X=495 Y=825")
 	$boxNext = ParseBox("X=1084 Y=901 X=1100 Y=918")
 	$boxItem = ParseBox("X=559 Y=336 X=1037 Y=879")
@@ -52,8 +52,10 @@ If @DesktopWidth == 1600 And @DesktopHeight == 1200 Then
 	$boxLevelMax = ParseBox("X=263 Y=556 X=292 Y=577")
 	$boxPref1Min = ParseBox("X=407 Y=653 X=433 Y=670")
 
-ElseIf @DesktopWidth == 1280 And @DesktopHeight == 800 Then
-	$boxSearch = ParseBox("X=257 Y=614 X=373 Y=629")
+ElseIf @DesktopWidth == 1280 And @DesktopHeight == 800 Then ; luxchow
+
+
+$boxSearch = ParseBox("X=257 Y=614 X=373 Y=629")
 
 $boxCraftingQuantity = ParseBox("X=302 Y=404 X=337 Y=411")
 $boxCraftingPPU = ParseBox("X=696 Y=228 X=799 Y=245")
@@ -71,7 +73,18 @@ $boxLevelMin = ParseBox("X=535 Y=479 X=535 Y=479")
 $boxLevelMax = ParseBox("X=535 Y=479 X=535 Y=479")
 $boxPref1Min = ParseBox("X=535 Y=479 X=535 Y=479")
 
-ElseIf @DesktopWidth == 1680 And @DesktopHeight == 1050 Then
+ElseIf @DesktopWidth == 1680 And @DesktopHeight == 1050 Then ; cicero
+	$checksumProcessingAuction = ParseBox("X=751 Y=259 X=927 Y=274")
+	$tabCompleted = ParseBox("X=1064 Y=140 X=1240 Y=164")
+	$tabSearch = ParseBox("X=432 Y=137 X=606 Y=161")
+	$boxCompletedTransaction = ParseBox("X=1096 Y=291 X=1284 Y=306")
+	$boxCompletedAmount = ParseBox("X=1284 Y=291 X=1391 Y=305")
+	$boxCraftingBuyout = ParseBox("X=1204 Y=301 X=1341 Y=318")
+	$boxCraftingBuyoutConfirm = ParseBox("X=644 Y=740 X=818 Y=775")
+	$boxAuctionOK = ParseBox("X=752 Y=427 X=922 Y=467")
+	$boxSendToStash = ParseBox("X=312 Y=421 X=506 Y=447")
+
+
 	$boxLevelMin = ParseBox("X=302 Y=488 X=319 Y=498")
 	$boxLevelMax = ParseBox("X=373 Y=487 X=388 Y=497")
 	$boxPref1Min = ParseBox("X=498 Y=575 X=515 Y=582")
